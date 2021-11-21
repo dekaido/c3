@@ -166,6 +166,8 @@ jobs:
               --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
               --region us-west-2
 
+            aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+
       - run:
           name: Ensure front-end infrastructure exist
           command: |
