@@ -9,6 +9,7 @@ commands:
         description: Notif for when something fails
         steps:
           - slack/notify:
+                event: fail
                 custom: |
                     {
                         "blocks": [
@@ -24,9 +25,8 @@ commands:
                             }
                         ]
                     }
-                event: fail
-                channel: c3
-                mentions: '@dekaido'
+                # channel: c3
+                # mentions: '@dekaido'
 
             # - slack/notify:
             #     channel: c3
