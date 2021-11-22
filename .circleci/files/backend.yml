@@ -26,6 +26,7 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
+      VpcId: vpc-096463275a86ab99c
       InstanceType: t3.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
