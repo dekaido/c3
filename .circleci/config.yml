@@ -8,10 +8,11 @@ commands:
     notify_fail:
         description: Notif for when something fails
         steps:
-        - slack/notify:
-            event: fail
-            mentions: '@dekaido'
-            template: basic_fail_1
+            - slack/notify:
+                channel: c3
+                event: fail
+                mentions: '@dekaido'
+                template: basic_fail_1
 
 #   destroy-environment:
 #     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -177,6 +178,8 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
+      - notify_fail
+
 #       - run:
 #           name: Add back-end ip to ansible inventory
 #           command: |
@@ -187,7 +190,6 @@ jobs:
 #           paths:
 #             - project/.circleci/ansible/inventory.txt
 #       # Here's where you will add some code to rollback on failure      
-      - notify_fail
 
 #   configure-infrastructure:
 #     docker:
@@ -339,6 +341,7 @@ workflows:
           filters:
             branches:
               only: [master]
+          context: slack-secrets
     #   - configure-infrastructure:
     #       requires: [deploy-infrastructure]
     #   - run-migrations:
