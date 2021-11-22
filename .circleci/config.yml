@@ -36,6 +36,7 @@ commands:
     
     print_eventstacktrace:
         description: print stack events
+        event: fail
         steps:
           - run:
                 command: aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
@@ -203,7 +204,10 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
-      - notify_fail
+      - slack/notify:
+          channel: $SLACK_DEFAULT_CHANNEL
+          event: fail
+          template: basic_fail_1
       - print_eventstacktrace
 
 #       - run:
