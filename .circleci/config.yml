@@ -25,6 +25,8 @@ commands:
                         ]
                     }
                 event: fail
+                channel: C02NG9X5JNM
+                mentions: '@dekaido'
 
             # - slack/notify:
             #     channel: c3
@@ -170,10 +172,9 @@ jobs:
             echo "AWS_REGION: $AWS_REGION"
             echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
             aws lightsail get-regions --query "regions[?name=='$AWS_REGION'].displayName" --output text
-            aws configure list
+            # aws configure list
             aws configure set region us-west-2
-            aws configure list
-            aws ec2 describe-availability-zones --region $AWS_REGION
+            # aws ec2 describe-availability-zones --region $AWS_REGION
 
       - run:
           name: Ensure back-end infrastructure exists
