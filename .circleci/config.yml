@@ -179,13 +179,18 @@ jobs:
           command: |
             yum -y install tar
             yum -y install gzip
+      - run:
+          name: Print queries & echos
+          command: |
             echo "CIRCLE_WORKFLOW_ID: ${CIRCLE_WORKFLOW_ID:0:7}"
             echo "AWS_REGION: $AWS_REGION"
             echo "AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION"
-            echo "Details of AWS_DEFAULT_REGION: "
+            echo "AWS_DEFAULT_REGION: "
+            echo "region display name:"
             aws lightsail get-regions --query "regions[?name=='$AWS_DEFAULT_REGION'].displayName" --output text;
+            echo "region name:"
             aws lightsail get-regions --query  "regions[?name=='$AWS_DEFAULT_REGION'].name" --output text;
-            aws lightsail get-regions --query "regions[?name=='$AWS_DEFAULT_REGION'].availibilityZones" --output json;
+            # aws lightsail get-regions --query "regions[?name=='$AWS_DEFAULT_REGION'].availibilityZones" --output json;
 
       - run:
           name: Ensure back-end infrastructure exists
@@ -207,12 +212,12 @@ jobs:
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
-      - slack/notify:
-          channel: $SLACK_DEFAULT_CHANNEL
-          event: fail
-          template: basic_fail_1
+    #   - slack/notify:
+    #       channel: $SLACK_DEFAULT_CHANNEL
+    #       event: fail
+    #       template: basic_fail_1
 
-      - print-eventstacktrace
+    #   - print-eventstacktrace
 
       - run:
           name: Add back-end ip to ansible inventory
@@ -247,11 +252,11 @@ jobs:
             apk add --update gzip
             apk add --update ansible
 
-      - run:
-          name: Configure server
-          command: |
-            # Your code here
-            exit 1
+    #   - run:
+    #       name: Configure server
+    #       command: |
+    #         # Your code here
+    #         exit 1
       # Here's where you will add some code to rollback on failure      
 
 #   run-migrations:
