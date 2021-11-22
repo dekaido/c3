@@ -34,25 +34,28 @@ commands:
             #     mentions: '@dekaido'
             #     template: basic_fail_1
     
-    print_eventstacktrace:
+    print-eventstacktrace:
         description: print stack events
-        event: fail
         steps:
           - run:
+                when: on_fail
                 command: aws cloudformation describe-stack-events --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
 
-
-#   destroy-environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#       # Add parameter here   
-#     steps:
-#       - run:
-#           name: Destroy environments
-#           when: on_fail
-#           command: |
-#             # Your code here
-#             exit 1
+    destroy-environment:
+        description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+        parameters:
+        workflowid:
+            description: unique identifier
+            type: string   
+        steps:
+          - run:
+                name: Destroy environments
+                when: on_fail
+                command: |
+                    aws s3 rm s3://udapeople-xyz123 --recursive
+                    aws cloudformation delete-stack --stack-name InitialStack
+                    aws cloudformation delete-stack --stack-name udapeople-backendstack-${CIRCLE_WORKFLFOW_ID:0:7}
+                    # aws cloudformation delete-stack --stack-name udapeople-frontendstack-${CIRCLE_WORKFLFOW_ID:0:7}
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -209,7 +212,7 @@ jobs:
           event: fail
           template: basic_fail_1
 
-      - print_eventstacktrace
+      - print-eventstacktrace
 
       - run:
           name: Add back-end ip to ansible inventory
@@ -219,12 +222,13 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
+            
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
 
-    #   - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.circleci/ansible/inventory.txt
-#       # Here's where you will add some code to rollback on failure      
+      - destroy-environment
 
 #   configure-infrastructure:
 #     docker:
